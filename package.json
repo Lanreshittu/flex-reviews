@@ -1,0 +1,56 @@
+{
+  "name": "flex-reviews",
+  "version": "1.0.0",
+  "description": "Flex Living Reviews Dashboard - A comprehensive reviews management system with Hostaway integration, admin dashboard, and Google Reviews support",
+  "main": "dist/memory-server.js",
+  "scripts": {
+    "dev": "ts-node src/memory-server.ts",
+    "dev-db": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/memory-server.js",
+    "start:db": "node dist/server.js",
+    "seed": "ts-node src/scripts/seed-data.ts",
+    "postinstall": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "reviews",
+    "dashboard",
+    "hostaway",
+    "google-reviews",
+    "property-management",
+    "api",
+    "typescript",
+    "express",
+    "swagger"
+  ],
+  "author": "Flex Living Developer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/flex-reviews.git"
+  },
+  "homepage": "https://github.com/yourusername/flex-reviews#readme",
+  "bugs": {
+    "url": "https://github.com/yourusername/flex-reviews/issues"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.27"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "@types/pg": "^8.11.10",
+    "@types/swagger-ui-express": "^4.1.8",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
+  }
+}
