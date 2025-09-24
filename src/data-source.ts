@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Listing } from "./entity/Listing";
-import { Review } from "./entity/Review";
+import { Listing } from "./entities/Listing";
+import { Review } from "./entities/Review";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -14,8 +14,7 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DATABASE || "flex",
   synchronize: true,
   logging: false, // Disable SQL query logging
-  entities: [__dirname + "/entity/*.{js,ts}"],
-  migrations: ["dist/migration/*.js"],
+  entities: [__dirname + "/entities/*.{js,ts}"],
   // SSL configuration for Render databases
   ssl: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "PRODUCTION" ? {
     rejectUnauthorized: false

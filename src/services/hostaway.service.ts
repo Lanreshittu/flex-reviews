@@ -1,7 +1,7 @@
 // src/services/hostaway.service.ts
 import { AppDataSource } from "../data-source";
-import { Listing } from "../entity/Listing";
-import { Review } from "../entity/Review";
+import { Listing } from "../entities/Listing";
+import { Review } from "../entities/Review";
 import { normalizeHostawayItem } from "../lib/normalize";
 import fs from "node:fs";
 import path from "node:path";

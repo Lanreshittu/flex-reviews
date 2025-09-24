@@ -1,6 +1,6 @@
 import { AppDataSource } from "../data-source";
-import { Listing } from "../entity/Listing";
-import { Review } from "../entity/Review";
+import { Listing } from "../entities/Listing";
+import { Review } from "../entities/Review";
 
 export const AnalyticsService = {
   // Get cross-property analytics overview
