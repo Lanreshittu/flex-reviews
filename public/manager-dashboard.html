@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex Living Reviews Dashboard - Enhanced</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">F</div>
+                <span>Flex Living Reviews</span>
+            </div>
+            <div class="header-actions">
+                <select id="propertySelector" class="property-selector">
+                    <option value="">Select Property</option>
+                </select>
+                <button id="refreshBtn" class="btn btn-secondary btn-sm">
+                    🔄 Refresh
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Performance Overview -->
+        <div id="performanceOverview" class="dashboard-grid">
+            <!-- Performance cards will be populated here -->
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-header">
+                <h2 class="filters-title">Filters & Search</h2>
+                <button id="clearFilters" class="clear-filters">Clear All</button>
+            </div>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Search Reviews</label>
+                    <input type="text" id="searchInput" class="filter-input" placeholder="Search in comments...">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Rating</label>
+                    <select id="ratingFilter" class="filter-input">
+                        <option value="">All Ratings</option>
+                        <option value="5">5 Stars</option>
+                        <option value="4">4+ Stars</option>
+                        <option value="3">3+ Stars</option>
+                        <option value="2">2+ Stars</option>
+                        <option value="1">1+ Stars</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select id="statusFilter" class="filter-input">
+                        <option value="">All Status</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Channel</label>
+                    <select id="channelFilter" class="filter-input">
+                        <option value="">All Channels</option>
+                        <option value="hostaway">Hostaway</option>
+                        <option value="google">Google</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <select id="dateFilter" class="filter-input">
+                        <option value="">All Time</option>
+                        <option value="7d">Last 7 Days</option>
+                        <option value="30d">Last 30 Days</option>
+                        <option value="90d">Last 90 Days</option>
+                        <option value="365d">Last Year</option>
+                        <option value="1825d">Last 5 Years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sort By</label>
+                    <select id="sortBy" class="filter-input">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="rating-high">Highest Rating</option>
+                        <option value="rating-low">Lowest Rating</option>
+                        <option value="property">Property Name</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <div class="reviews-header">
+                <div id="filterResults" class="filter-results">Loading reviews...</div>
+                <h2 class="reviews-title">Reviews Management</h2>
+                <div class="reviews-actions">
+                    <button id="bulkApprove" class="btn btn-primary btn-sm">
+                        ✅ Bulk Approve
+                    </button>
+                    <button id="exportBtn" class="btn btn-secondary btn-sm">
+                        📊 Export CSV
+                    </button>
+                </div>
+            </div>
+            <div id="reviewsTableContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Loading reviews...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading">
+            <div class="spinner"></div>
+            <span>Processing...</span>
+        </div>
+    </div>
+
+    <script src="enhanced-dashboard.js"></script>
+</body>
+</html>

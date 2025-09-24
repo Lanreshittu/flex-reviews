@@ -9,6 +9,8 @@ import hostawayRoutes from "./routes/hostaway.routes";
 import reviewsRoutes from "./routes/reviews.routes";
 import adminRoutes from "./routes/admin.routes";
 import googleRoutes from "./routes/google.routes";
+import propertyRoutes from "./routes/property.routes";
+import analyticsRoutes from "./routes/analytics.routes";
 
 const app = express();
 app.use(cors());
@@ -26,6 +28,8 @@ app.use("/api/reviews/hostaway", hostawayRoutes); // <-- assessed endpoint
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/google", googleRoutes);
+app.use("/api/properties", propertyRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 AppDataSource.initialize().then(() => {
   const port = parseInt(process.env.PORT || '4000', 10);

@@ -312,6 +312,149 @@ app.patch("/api/admin/reviews/:id/approve", (req, res) => {
   });
 });
 
+// Property performance endpoints
+app.get("/api/properties", (req, res) => {
+  const propertiesWithStats = listings.map(listing => {
+    const listingReviews = reviews.filter(r => r.listing_id === listing.id);
+    const approvedReviews = listingReviews.filter(r => r.approved);
+    const totalReviews = listingReviews.length;
+    // Safe average rating calculation
+    let totalRating = 0;
+    let validRatings = 0;
+    
+    listingReviews.forEach(r => {
+      const rating = parseFloat(String(r.rating || '0'));
+      if (!isNaN(rating) && rating >= 0 && rating <= 5) {
+        totalRating += rating;
+        validRatings++;
+      }
+    });
+    
+    const averageRating = validRatings > 0 ? totalRating / validRatings : 0;
+    const approvalRate = totalReviews > 0 
+      ? (approvedReviews.length / totalReviews) * 100 
+      : 0;
+
+    // Recent reviews (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentReviews = listingReviews.filter(r => 
+      new Date(r.submitted_at) >= thirtyDaysAgo
+    );
+
+    return {
+      id: listing.id,
+      name: listing.name,
+      address: listing.address,
+      totalReviews,
+      approvedReviews: approvedReviews.length,
+      averageRating: Math.round(averageRating * 10) / 10,
+      approvalRate: Math.round(approvalRate),
+      recentReviews: recentReviews.length,
+      lastReviewDate: listingReviews.length > 0 
+        ? listingReviews.sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())[0].submitted_at
+        : null
+    };
+  });
+
+  res.json({ ok: true, properties: propertiesWithStats });
+});
+
+app.get("/api/properties/:id/performance", (req, res) => {
+  const { id } = req.params;
+  const listing = listings.find(l => l.id === id);
+  if (!listing) {
+    return res.status(404).json({ ok: false, error: "Property not found" });
+  }
+
+  const listingReviews = reviews.filter(r => r.listing_id === id);
+  const approvedReviews = listingReviews.filter(r => r.approved);
+  const totalReviews = listingReviews.length;
+  // Safe average rating calculation
+  let totalRating = 0;
+  let validRatings = 0;
+  
+  listingReviews.forEach(r => {
+    const rating = parseFloat(r.rating);
+    if (!isNaN(rating) && rating >= 0 && rating <= 5) {
+      totalRating += rating;
+      validRatings++;
+    }
+  });
+  
+  const averageRating = validRatings > 0 ? totalRating / validRatings : 0;
+
+  // Rating distribution
+  const ratingDistribution = [5, 4, 3, 2, 1].map(rating => {
+    const count = listingReviews.filter(r => {
+        const reviewRating = parseFloat(String(r.rating || '0'));
+      return !isNaN(reviewRating) && Math.round(reviewRating) === rating;
+    }).length;
+    
+    return {
+      rating,
+      count,
+      percentage: validRatings > 0 
+        ? Math.round((count / validRatings) * 100)
+        : 0
+    };
+  });
+
+  res.json({
+    ok: true,
+    performance: {
+      property: {
+        id: listing.id,
+        name: listing.name,
+        address: listing.address
+      },
+      metrics: {
+        totalReviews,
+        approvedReviews: approvedReviews.length,
+        averageRating: Math.round(averageRating * 10) / 10,
+        approvalRate: totalReviews > 0 
+          ? Math.round((approvedReviews.length / totalReviews) * 100)
+          : 0
+      },
+      ratingDistribution
+    }
+  });
+});
+
+app.get("/api/analytics/overview", (req, res) => {
+  const totalProperties = listings.length;
+  const totalReviews = reviews.length;
+  const approvedReviews = reviews.filter(r => r.approved).length;
+  // Safe average rating calculation
+  let totalRating = 0;
+  let validRatings = 0;
+  
+  reviews.forEach(r => {
+    const rating = parseFloat(r.rating);
+    if (!isNaN(rating) && rating >= 0 && rating <= 5) {
+      totalRating += rating;
+      validRatings++;
+    }
+  });
+  
+  const averageRating = validRatings > 0 ? totalRating / validRatings : 0;
+
+  res.json({
+    ok: true,
+    overview: {
+      summary: {
+        totalProperties,
+        totalReviews,
+        approvedReviews,
+        averageRating: Math.round(averageRating * 10) / 10,
+        approvalRate: totalReviews > 0 
+          ? Math.round((approvedReviews / totalReviews) * 100)
+          : 0
+      }
+    }
+  });
+});
+
 // Seed Google reviews
 app.post("/api/google/seed", (req, res) => {
   const googleReviews = [
