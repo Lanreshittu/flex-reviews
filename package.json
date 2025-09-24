@@ -2,12 +2,15 @@
   "name": "flex-reviews",
   "version": "1.0.0",
   "description": "Flex Living Reviews Dashboard - A comprehensive reviews management system with Hostaway integration, admin dashboard, and Google Reviews support",
-  "main": "dist/memory-server.js",
+  "main": "dist/server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "ts-node src/memory-server.ts",
     "dev-db": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/memory-server.js",
+    "start": "node dist/server.js",
     "start:db": "node dist/server.js",
     "postinstall": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
