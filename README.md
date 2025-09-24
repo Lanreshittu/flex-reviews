@@ -20,6 +20,16 @@ A comprehensive reviews management system built for Flex Living's property manag
 - **Health Monitoring**: Built-in health checks
 - **Environment Configuration**: Flexible deployment options
 
+### Advanced Features
+- **Analytics Dashboard**: Cross-property performance metrics and insights
+- **Property Performance**: Individual property analytics with trend analysis
+- **Category Breakdown**: Detailed rating analysis by cleanliness, communication, etc.
+- **Bulk Operations**: Bulk approve/reject reviews with selection
+- **Export Functionality**: CSV export of review data
+- **Real-time Filtering**: Live search and filter capabilities
+- **Responsive Design**: Mobile-friendly interface with Tailwind CSS
+- **React Components**: Modern property display page with React
+
 ## 📋 Assessment Requirements Met
 
 ✅ **Hostaway Integration (Mocked)**
@@ -52,15 +62,21 @@ A comprehensive reviews management system built for Flex Living's property manag
 - **TypeORM** for database operations
 - **PostgreSQL** (optional) for production
 - **Swagger/OpenAPI** for API documentation
+- **Memory Server** with JSON file persistence
+- **CORS** enabled for cross-origin requests
 
 ### Frontend
-- **Vanilla JavaScript** with modern ES6+
+- **Vanilla JavaScript** with modern ES6+ (Manager Dashboard)
+- **React 18** with JSX (Property Display Page)
 - **Responsive Design** with CSS Grid/Flexbox
-- **Chart.js** for data visualization
 - **Tailwind CSS** for styling
+- **Font Awesome** icons
+- **Babel** for JSX compilation
 
 ### Development Tools
 - **ts-node-dev** for development
+- **ts-node** for TypeScript execution
+- **TypeScript** with strict configuration
 - **ESLint** for code quality
 - **Prettier** for code formatting
 
@@ -131,8 +147,19 @@ Headers: X-Admin-Key: your-admin-key
 
 #### Google Reviews
 ```http
-POST /api/google/seed
-GET /api/google/places/{placeId}
+POST /api/google/sync
+GET /api/google/reviews
+GET /api/google/test?placeId={placeId}
+```
+
+#### Properties & Analytics
+```http
+GET /api/properties
+GET /api/properties/{id}/performance
+GET /api/properties/{id}/trends?period=30d
+GET /api/analytics/overview
+GET /api/analytics/comparison?propertyIds=id1,id2
+GET /api/analytics/insights
 ```
 
 ### Query Parameters
@@ -142,10 +169,16 @@ GET /api/google/places/{placeId}
 | `page` | integer | Page number (default: 1) |
 | `pageSize` | integer | Items per page (default: 50) |
 | `listing` | string | Filter by listing name |
+| `listingId` | string | Filter by listing UUID |
 | `rating` | integer | Filter by rating (1-5) |
+| `minRating` | number | Filter by minimum rating |
 | `approved` | boolean | Filter by approval status |
 | `channel` | string | Filter by source (hostaway/google) |
 | `q` | string | Search in comments |
+| `from` | string | Filter from date (ISO format) |
+| `to` | string | Filter to date (ISO format) |
+| `sort` | string | Sort by: date_desc, rating_desc, rating_asc |
+| `period` | string | Time period for trends: 7d, 30d, 90d, 1y |
 
 ## 🏗 Project Structure
 
@@ -153,13 +186,45 @@ GET /api/google/places/{placeId}
 flex-reviews/
 ├── src/
 │   ├── controllers/     # API controllers
+│   │   ├── admin.controller.ts      # Admin operations
+│   │   ├── analytics.controller.ts  # Analytics & insights
+│   │   ├── google.controller.ts    # Google Reviews integration
+│   │   ├── hostaway.controller.ts   # Hostaway API (Assessment)
+│   │   ├── property.controller.ts  # Property management
+│   │   └── reviews.controller.ts   # Review operations
 │   ├── services/        # Business logic
+│   │   ├── analytics.service.ts    # Analytics calculations
+│   │   ├── google.service.ts       # Google Places API
+│   │   ├── hostaway.service.ts     # Hostaway data processing
+│   │   ├── property.service.ts     # Property analytics
+│   │   └── review.service.ts       # Review management
 │   ├── routes/          # Express routes
+│   │   ├── admin.routes.ts         # Admin endpoints
+│   │   ├── analytics.routes.ts     # Analytics endpoints
+│   │   ├── google.routes.ts       # Google Reviews
+│   │   ├── hostaway.routes.ts     # Hostaway (Assessment)
+│   │   ├── property.routes.ts     # Property endpoints
+│   │   └── reviews.routes.ts      # Review endpoints
 │   ├── entity/          # TypeORM entities
+│   │   ├── Listing.ts             # Property listings
+│   │   └── Review.ts               # Review data model
 │   ├── lib/             # Utility functions
-│   └── scripts/         # Database scripts
+│   │   ├── filters.ts             # Query parsing
+│   │   └── normalize.ts            # Data normalization
+│   ├── server.ts        # PostgreSQL server
+│   ├── memory-server.ts # Memory-based server
+│   ├── data-source.ts   # Database configuration
+│   └── swagger.config.ts # API documentation
 ├── public/              # Frontend files
+│   ├── manager-dashboard.html     # Admin dashboard
+│   ├── manager-dashboard.js       # Dashboard logic
+│   ├── property.html              # Property display page
+│   ├── property.js                # React components
+│   ├── google-reviews.html        # Google integration
+│   └── styles.css                 # Global styles
 ├── data/               # JSON data storage
+│   ├── listings.json              # Property data
+│   └── reviews.json               # Review data
 ├── swagger.json        # API documentation
 └── README.md
 ```
@@ -212,54 +277,40 @@ ADMIN_KEY=your-secret-admin-key
 
 ### Deployment Platforms
 
-#### Heroku
-```bash
-# Add PostgreSQL addon
-heroku addons:create heroku-postgresql:hobby-dev
-
-# Set environment variables
-heroku config:set ADMIN_KEY=your-secret-key
-heroku config:set NODE_ENV=production
-
-# Deploy
-git push heroku main
-```
-
-#### Railway
-```bash
-# Connect to Railway
-railway login
-railway link
-
-# Deploy
-railway up
-```
-
-#### DigitalOcean App Platform
-- Connect your GitHub repository
-- Set environment variables
-- Deploy automatically
-
 ## 📊 Dashboard Features
 
-### Manager Dashboard
+### Manager Dashboard (`manager-dashboard.html`)
 - **Review Overview**: Total reviews, average ratings, trends
-- **Filtering**: By property, rating, date, approval status
+- **Filtering**: By property, rating, date, approval status, channel
 - **Search**: Full-text search in review comments
 - **Approval System**: Approve/reject reviews for public display
+- **Bulk Operations**: Select and approve multiple reviews
+- **Export Functionality**: CSV export of review data
 - **Analytics**: Performance metrics and insights
+- **Property Selector**: Switch between properties or view all
+- **Real-time Updates**: Live filtering and sorting
 
-### Property Display
+### Property Display Page (`property.html`)
+- **React Components**: Modern, interactive interface
 - **Public Reviews**: Only approved reviews shown
 - **Responsive Design**: Mobile-friendly layout
 - **Rating Display**: Star ratings and category breakdowns
 - **Guest Information**: Names and submission dates
+- **Featured Reviews**: Highlight top-rated reviews
+- **Category Breakdown**: Detailed rating analysis
+- **Property Details**: Amenities, location, policies
+- **Image Gallery**: Property photos and descriptions
+
+### Google Reviews Integration (`google-reviews.html`)
+- **API Testing**: Test Google Places API connection
+- **Review Syncing**: Sync Google reviews to database
+- **Setup Guide**: Step-by-step configuration instructions
+- **Review Management**: View and manage Google reviews
 
 ## 🔒 Security
 
 - **Admin Authentication**: Secure admin key for review approval
 - **Input Validation**: All inputs sanitized and validated
-- **CORS Configuration**: Proper cross-origin setup
 - **Environment Variables**: Sensitive data in environment files
 
 ## 🧪 Testing
@@ -269,45 +320,30 @@ railway up
 # Health check
 curl http://localhost:3000/health
 
-# Get reviews
+# Get Hostaway reviews 
 curl http://localhost:3000/api/reviews/hostaway
 
 # Approve review (requires admin key)
 curl -X PATCH http://localhost:3000/api/admin/reviews/review-id/approve \
-  -H "X-Admin-Key: your-admin-key" \
+  -H "X-Admin-Key: admin-secret-key-123" \
   -H "Content-Type: application/json" \
   -d '{"approved": true}'
+
+# Test Google Places API
+curl "http://localhost:3000/api/google/test?placeId=ChIJN1t_tDeuEmsRUsoyG83frY4"
 ```
 
 ### API Testing
 - Use the Swagger UI at `/api-docs`
 - Test all endpoints interactively
 - View request/response schemas
+- Interactive API documentation with examples
 
-## 📈 Performance
+### Frontend Testing
+- **Manager Dashboard**: http://localhost:3000/manager-dashboard.html
+- **Property Display**: http://localhost:3000/property.html
+- **Google Integration**: http://localhost:3000/google-reviews.html
 
-- **Pagination**: Efficient data loading
-- **Caching**: In-memory data storage
-- **Optimized Queries**: Database query optimization
-- **Lazy Loading**: Frontend performance optimization
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-For questions or support:
-- Create an issue in the repository
-- Contact: dev@flexliving.com
 
 ## 🎯 Assessment Deliverables
 
@@ -319,6 +355,34 @@ For questions or support:
 ✅ **API Behaviors**: RESTful endpoints with proper error handling
 ✅ **Google Reviews**: Integration exploration and findings documented
 
+## 🔍 Implementation Details
+
+### Data Models
+- **Listing Entity**: Properties with UUID primary keys, external references
+- **Review Entity**: Comprehensive review data with categories, ratings, approval status
+- **Normalization**: Hostaway 1-10 scale converted to 1-5 scale
+- **Category Support**: Cleanliness, communication, location, value, etc.
+
+### API Architecture
+- **Controller-Service Pattern**: Clean separation of concerns
+- **Route Organization**: Modular route definitions
+- **Error Handling**: Comprehensive error responses
+- **Authentication**: Admin key-based security
+- **Validation**: Input sanitization and type checking
+
+### Frontend Architecture
+- **Vanilla JS Dashboard**: Modern ES6+ with class-based architecture
+- **React Property Page**: Component-based with hooks
+- **Responsive Design**: Mobile-first approach
+- **State Management**: Local state with efficient updates
+- **API Integration**: RESTful API consumption
+
+### Data Processing
+- **Hostaway Integration**: Mock data seeding and normalization
+- **Google Reviews**: Places API integration with error handling
+- **Analytics**: Complex calculations for insights and trends
+- **Filtering**: Multi-dimensional filtering capabilities
+- **Export**: CSV generation with proper formatting
+
 ---
 
-**Built with ❤️ for Flex Living Assessment**
