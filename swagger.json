@@ -3,26 +3,8 @@
   "info": {
     "title": "Flex Living Reviews API",
     "version": "1.0.0",
-    "description": "API for managing property reviews and dashboard functionality. This API provides endpoints for fetching and normalizing Hostaway reviews (Assessment requirement), managing reviews with filtering and pagination, admin operations for review approval, Google Reviews integration, and health monitoring.",
-    "contact": {
-      "name": "Flex Living",
-      "email": "dev@flexliving.com"
-    },
-    "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
-    }
+    "description": "API for managing property reviews and dashboard functionality. This API provides endpoints for fetching and normalizing Hostaway reviews (Assessment requirement), managing reviews with filtering and pagination, admin operations for review approval, Google Reviews integration, and health monitoring."
   },
-  "servers": [
-    {
-      "url": "http://localhost:3000",
-      "description": "Memory Server (Development)"
-    },
-    {
-      "url": "http://localhost:4000",
-      "description": "PostgreSQL Server (Production)"
-    }
-  ],
   "security": [
     {
       "AdminKey": []
