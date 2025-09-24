@@ -18,12 +18,12 @@ export const ReviewsController = {
     const to = req.query.to ? new Date(String(req.query.to)) : undefined;
 
     const { total, items } = await ReviewService.search({
-      listingId,
-      channel,
-      approved: typeof approved === "boolean" ? approved : null,
-      q: q || null,
-      from: from || null,
-      to: to || null,
+      ...(listingId && { listingId }),
+      ...(channel && { channel }),
+      ...(typeof approved === "boolean" && { approved }),
+      ...(q && { q }),
+      ...(from && { from }),
+      ...(to && { to }),
       sort,
       skip,
       take: pageSize,

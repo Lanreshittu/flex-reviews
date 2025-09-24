@@ -16,6 +16,11 @@
                 <span style="color: white;">Flex Living Reviews</span>
             </div>
             <div class="header-actions">
+                <div id="adminStatus" class="admin-status">
+                    <span id="adminStatusText" class="admin-status-text">🔒 Not Authenticated</span>
+                    <button id="adminLoginBtn" class="btn btn-outline btn-sm">Login</button>
+                    <button id="adminLogoutBtn" class="btn btn-outline btn-sm" style="display: none;">Logout</button>
+                </div>
                 <select id="propertySelector" class="property-selector">
                     <option value="">Select Property</option>
                 </select>
@@ -114,6 +119,31 @@
                     <div class="spinner"></div>
                     <span>Loading reviews...</span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔐 Admin Authentication</h3>
+                <button id="closeLoginModal" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">
+                    Enter your admin key to approve or reject reviews. 
+                    Without authentication, you can only view reviews.
+                </p>
+                <div class="form-group">
+                    <label for="adminKeyInput" class="form-label">Admin Key</label>
+                    <input type="password" id="adminKeyInput" class="form-input" placeholder="Enter admin key...">
+                    <div id="adminKeyError" class="error-message" style="display: none;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="loginBtn" class="btn btn-primary">Login</button>
+                <button id="cancelLoginBtn" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>

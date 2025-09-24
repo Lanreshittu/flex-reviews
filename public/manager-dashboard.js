@@ -14,18 +14,31 @@ class FlexReviewsDashboard {
             sortBy: 'newest'
         };
         this.selectedReviews = new Set();
+        this.isAuthenticated = false;
+        this.adminKey = null;
         
         this.init();
     }
 
     async init() {
         this.setupEventListeners();
+        this.updateAuthUI(); // Initialize authentication UI
         await this.loadProperties();
         await this.loadAnalytics();
         await this.loadReviews();
     }
 
     setupEventListeners() {
+        // Admin authentication
+        document.getElementById('adminLoginBtn').addEventListener('click', () => this.showLoginModal());
+        document.getElementById('adminLogoutBtn').addEventListener('click', () => this.logout());
+        document.getElementById('closeLoginModal').addEventListener('click', () => this.hideLoginModal());
+        document.getElementById('cancelLoginBtn').addEventListener('click', () => this.hideLoginModal());
+        document.getElementById('loginBtn').addEventListener('click', () => this.authenticate());
+        document.getElementById('adminKeyInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.authenticate();
+        });
+
         // Property selector
         document.getElementById('propertySelector').addEventListener('change', (e) => {
             this.currentProperty = e.target.value;
@@ -338,8 +351,12 @@ class FlexReviewsDashboard {
                 <td>
                     <div class="action-buttons">
                         ${!review.approved ? 
-                            `<button class="btn-approve" onclick="dashboard.approveReview('${review.id}')">Approve</button>` : 
-                            `<button class="btn-reject" onclick="dashboard.rejectReview('${review.id}')">Reject</button>`
+                            `<button class="btn-approve ${!this.isAuthenticated ? 'btn-disabled' : ''}" 
+                                     onclick="dashboard.approveReview('${review.id}')" 
+                                     ${!this.isAuthenticated ? 'disabled' : ''}>Approve</button>` : 
+                            `<button class="btn-reject ${!this.isAuthenticated ? 'btn-disabled' : ''}" 
+                                     onclick="dashboard.rejectReview('${review.id}')" 
+                                     ${!this.isAuthenticated ? 'disabled' : ''}>Reject</button>`
                         }
                     </div>
                 </td>
@@ -509,12 +526,18 @@ class FlexReviewsDashboard {
     }
 
     async approveReview(reviewId) {
+        if (!this.isAuthenticated) {
+            this.showError('Please authenticate to approve reviews');
+            this.showLoginModal();
+            return;
+        }
+
         try {
             const response = await fetch(`${this.apiBase}/api/admin/reviews/${reviewId}/approve`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Admin-Key': 'admin-secret-key-123'
+                    'X-Admin-Key': this.adminKey
                 },
                 body: JSON.stringify({ approved: true })
             });
@@ -532,12 +555,18 @@ class FlexReviewsDashboard {
     }
 
     async rejectReview(reviewId) {
+        if (!this.isAuthenticated) {
+            this.showError('Please authenticate to reject reviews');
+            this.showLoginModal();
+            return;
+        }
+
         try {
             const response = await fetch(`${this.apiBase}/api/admin/reviews/${reviewId}/approve`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Admin-Key': 'admin-secret-key-123'
+                    'X-Admin-Key': this.adminKey
                 },
                 body: JSON.stringify({ approved: false })
             });
@@ -555,6 +584,12 @@ class FlexReviewsDashboard {
     }
 
     async bulkApprove() {
+        if (!this.isAuthenticated) {
+            this.showError('Please authenticate to approve reviews');
+            this.showLoginModal();
+            return;
+        }
+
         if (this.selectedReviews.size === 0) {
             this.showError('Please select reviews to approve');
             return;
@@ -566,8 +601,9 @@ class FlexReviewsDashboard {
             );
             
             await Promise.all(promises);
+            const count = this.selectedReviews.size;
             this.selectedReviews.clear();
-            this.showSuccess(`${this.selectedReviews.size} reviews approved successfully`);
+            this.showSuccess(`${count} reviews approved successfully`);
             this.loadReviews();
         } catch (error) {
             console.error('Error bulk approving reviews:', error);
@@ -652,6 +688,107 @@ class FlexReviewsDashboard {
         setTimeout(() => {
             notification.remove();
         }, 3000);
+    }
+
+    // Admin Authentication Methods
+    showLoginModal() {
+        document.getElementById('adminLoginModal').style.display = 'flex';
+        document.getElementById('adminKeyInput').focus();
+    }
+
+    hideLoginModal() {
+        document.getElementById('adminLoginModal').style.display = 'none';
+        document.getElementById('adminKeyInput').value = '';
+        document.getElementById('adminKeyError').style.display = 'none';
+    }
+
+    async authenticate() {
+        const adminKey = document.getElementById('adminKeyInput').value.trim();
+        const errorDiv = document.getElementById('adminKeyError');
+        
+        if (!adminKey) {
+            errorDiv.textContent = 'Please enter an admin key';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        try {
+            // Test the admin key by making a test request
+            const response = await fetch(`${this.apiBase}/api/admin/reviews/test-auth/approve`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Admin-Key': adminKey
+                },
+                body: JSON.stringify({ approved: true })
+            });
+
+            if (response.status === 401) {
+                errorDiv.textContent = 'Invalid admin key';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // If we get here, the key is valid (even if the review doesn't exist)
+            this.isAuthenticated = true;
+            this.adminKey = adminKey;
+            this.updateAuthUI();
+            this.hideLoginModal();
+            this.showSuccess('Successfully authenticated as admin');
+            
+        } catch (error) {
+            console.error('Authentication error:', error);
+            errorDiv.textContent = 'Authentication failed. Please try again.';
+            errorDiv.style.display = 'block';
+        }
+    }
+
+    logout() {
+        this.isAuthenticated = false;
+        this.adminKey = null;
+        this.updateAuthUI();
+        this.showSuccess('Logged out successfully');
+    }
+
+    updateAuthUI() {
+        const statusText = document.getElementById('adminStatusText');
+        const loginBtn = document.getElementById('adminLoginBtn');
+        const logoutBtn = document.getElementById('adminLogoutBtn');
+        const bulkApproveBtn = document.getElementById('bulkApprove');
+
+        if (this.isAuthenticated) {
+            statusText.textContent = '🔓 Authenticated';
+            statusText.style.color = '#10B981';
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+            bulkApproveBtn.disabled = false;
+            bulkApproveBtn.classList.remove('btn-disabled');
+        } else {
+            statusText.textContent = '🔒 Not Authenticated';
+            statusText.style.color = '#EF4444';
+            loginBtn.style.display = 'inline-block';
+            logoutBtn.style.display = 'none';
+            bulkApproveBtn.disabled = true;
+            bulkApproveBtn.classList.add('btn-disabled');
+        }
+        
+        // Update action buttons in the table
+        this.updateActionButtons();
+    }
+
+    updateActionButtons() {
+        const actionButtons = document.querySelectorAll('.action-buttons button');
+        actionButtons.forEach(button => {
+            if (this.isAuthenticated) {
+                button.disabled = false;
+                button.classList.remove('btn-disabled');
+                button.parentElement.classList.remove('action-disabled');
+            } else {
+                button.disabled = true;
+                button.classList.add('btn-disabled');
+                button.parentElement.classList.add('action-disabled');
+            }
+        });
     }
 }
 

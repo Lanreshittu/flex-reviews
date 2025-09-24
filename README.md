@@ -51,8 +51,6 @@ A comprehensive reviews management system built for Flex Living's property manag
 
 ✅ **Google Reviews (Exploration)**
 - Basic integration implemented
-- Mock data for testing
-- Documentation of findings
 
 ## 🛠 Tech Stack
 
