@@ -153,7 +153,7 @@ class FlexReviewsDashboard {
                     <h3 class="card-title">Average Rating</h3>
                     <div class="card-icon rating">⭐</div>
                 </div>
-                <div class="card-value">${summary.averageRating}</div>
+                <div class="card-value">${summary.averageRating || '--'}</div>
                 <div class="card-label">Overall Rating</div>
             </div>
             
@@ -202,7 +202,7 @@ class FlexReviewsDashboard {
                     <h3 class="card-title">Average Rating</h3>
                     <div class="card-icon rating">⭐</div>
                 </div>
-                <div class="card-value">${metrics.averageRating}</div>
+                <div class="card-value">${metrics.averageRating || '--'}</div>
                 <div class="card-label">Overall Rating</div>
             </div>
             
@@ -318,7 +318,7 @@ class FlexReviewsDashboard {
                         <div class="rating-stars">
                             ${this.renderStars(review.rating)}
                         </div>
-                        <span class="rating-value">${review.rating}</span>
+                        <span class="rating-value">${review.rating && !isNaN(review.rating) ? review.rating : '--'}</span>
                     </div>
                 </td>
                 <td>
@@ -348,8 +348,14 @@ class FlexReviewsDashboard {
     }
 
     renderStars(rating) {
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 !== 0;
+        // Handle null/undefined ratings
+        if (!rating || isNaN(rating)) {
+            return '<span class="text-gray-400 italic">No rating</span>';
+        }
+        
+        const safeRating = parseFloat(rating);
+        const fullStars = Math.floor(safeRating);
+        const hasHalfStar = safeRating % 1 !== 0;
         let stars = '';
         
         for (let i = 0; i < fullStars; i++) {
@@ -360,7 +366,7 @@ class FlexReviewsDashboard {
             stars += '<span class="star filled">☆</span>';
         }
         
-        const emptyStars = 5 - Math.ceil(rating);
+        const emptyStars = 5 - Math.ceil(safeRating);
         for (let i = 0; i < emptyStars; i++) {
             stars += '<span class="star">★</span>';
         }

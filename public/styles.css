@@ -9,11 +9,11 @@
 
 :root {
   /* Flex Living Color Palette */
-  --primary-green: #22C55E;
-  --primary-green-dark: #16A34A;
-  --primary-green-light: #DCFCE7;
-  --cream-bg: #FEF3C7;
-  --cream-light: #FEF9E7;
+  --primary-green: #284E4C;
+  --primary-green-dark: #1A3A38;
+  --primary-green-light: #E8F4F3;
+  --cream-bg: #fff9e9;
+  --cream-light: #fff9e9;
   --cream-accent: #F59E0B;
   --white: #FFFFFF;
   --gray-50: #F9FAFB;
@@ -28,7 +28,7 @@
   --gray-900: #111827;
   
   /* Status Colors */
-  --success: #22C55E;
+  --success: #284E4C;
   --warning: #F59E0B;
   --error: #EF4444;
   --info: #3B82F6;
@@ -101,7 +101,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-green);
+  color: var(--white);
   font-weight: 900;
 }
 

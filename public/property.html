@@ -9,6 +9,99 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+    <style>
+        /* Flex Living Brand Colors */
+        :root {
+            --flex-green: #284E4C;
+            --flex-green-dark: #1A3A38;
+            --flex-green-light: #E8F4F3;
+            --flex-cream: #fff9e9;
+            --flex-cream-light: #fff9e9;
+            --flex-accent: #F59E0B;
+        }
+        
+        /* Custom Font Stack */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        /* Flex Living Button Styles */
+        .btn-flex {
+            background: linear-gradient(135deg, var(--flex-green), var(--flex-green-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn-flex:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+        }
+        
+        /* Review Card Styles */
+        .review-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #F3F4F6;
+            transition: all 0.3s ease;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .review-card.featured {
+            border: 2px solid var(--flex-green);
+            background: linear-gradient(135deg, #ffffff, var(--flex-cream-light));
+        }
+        
+        /* Star Rating Styles */
+        .star-rating {
+            color: var(--flex-green);
+        }
+        
+        /* Category Badge Styles */
+        .category-badge {
+            background: var(--flex-green-light);
+            color: var(--flex-green-dark);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* Section Background */
+        .section-bg {
+            background: linear-gradient(135deg, #ffffff, var(--flex-cream-light));
+        }
+        
+        /* Header Gradient */
+        .header-gradient {
+            background: linear-gradient(135deg, var(--flex-green), var(--flex-green-dark));
+        }
+        
+        /* Rating Breakdown Bars */
+        .rating-bar {
+            background: var(--flex-green-light);
+            border-radius: 4px;
+            height: 8px;
+            overflow: hidden;
+        }
+        
+        .rating-bar-fill {
+            background: var(--flex-green);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>
