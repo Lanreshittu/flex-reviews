@@ -1,6 +1,6 @@
 // src/services/review.service.ts
 import { AppDataSource } from "../data-source";
-import { Review } from "../entities/Review";
+import { Review } from "../entities/Review.entity";
 
 export const ReviewService = {
   async search(params: {

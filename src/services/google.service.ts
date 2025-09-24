@@ -1,6 +1,6 @@
 import { AppDataSource } from "../data-source";
-import { Review } from "../entities/Review";
-import { Listing } from "../entities/Listing";
+import { Review } from "../entities/Review.entity";
+import { Listing } from "../entities/Listing.entity";
 import { normalizeGoogleReview } from "../lib/normalize";
 
 export const GoogleService = {

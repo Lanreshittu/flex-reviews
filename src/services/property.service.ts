@@ -1,6 +1,6 @@
 import { AppDataSource } from "../data-source";
-import { Listing } from "../entities/Listing";
-import { Review } from "../entities/Review";
+import { Listing } from "../entities/Listing.entity";
+import { Review } from "../entities/Review.entity";
 
 export const PropertyService = {
   // Get all properties with summary stats

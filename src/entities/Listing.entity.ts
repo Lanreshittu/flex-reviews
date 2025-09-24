@@ -1,6 +1,6 @@
 // src/entity/Listing.ts
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { Review } from "./Review";
+import { Review } from "./Review.entity";
 
 @Entity({ name: "listings" })
 export class Listing {

@@ -1,6 +1,6 @@
 // src/entity/Review.ts
 import { Entity, PrimaryColumn, Column, ManyToOne, Index, CreateDateColumn, UpdateDateColumn, JoinColumn } from "typeorm";
-import { Listing } from "./Listing";
+import { Listing } from "./Listing.entity";
 
 @Entity({ name: "reviews" })
 @Index(["listing_id", "approved", "channel"])
