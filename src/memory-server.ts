@@ -455,60 +455,6 @@ app.get("/api/analytics/overview", (req, res) => {
   });
 });
 
-// Seed Google reviews
-app.post("/api/google/seed", (req, res) => {
-  const googleReviews = [
-    {
-      id: "google:1",
-      listing_id: listings[0]?.id,
-      channel: "google",
-      type: "public",
-      status: "published",
-      rating: 5.0,
-      rating_raw: 5,
-      categories: null,
-      title: null,
-      comment: "Amazing apartment with incredible views! The location is perfect and the host was very accommodating. Highly recommend!",
-      author_name: "Alex Thompson",
-      submitted_at: new Date("2021-06-15").toISOString(),
-      approved: false,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: "google:2",
-      listing_id: listings[0]?.id,
-      channel: "google",
-      type: "public",
-      status: "published",
-      rating: 4.0,
-      rating_raw: 4,
-      categories: null,
-      title: null,
-      comment: "Great stay overall. The apartment was clean and well-equipped. The location is excellent for exploring London. Only minor issue was the WiFi speed.",
-      author_name: "Sophie Williams",
-      submitted_at: new Date("2021-07-22").toISOString(),
-      approved: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  ];
-  
-  // Add Google reviews
-  googleReviews.forEach(review => {
-    if (!reviews.find(r => r.id === review.id)) {
-      reviews.push(review);
-    }
-  });
-  
-  saveData();
-  
-  res.json({ 
-    ok: true, 
-    message: "Google reviews seeded successfully",
-    count: googleReviews.length
-  });
-});
 
 // Initialize data
 loadData();

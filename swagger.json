@@ -358,26 +358,44 @@
         }
       }
     },
-    "/api/google/seed": {
-      "post": {
-        "summary": "Seed Google reviews",
-        "description": "Populates the system with mock Google reviews for testing and development. This endpoint creates sample Google reviews to demonstrate the integration.",
+    "/api/google/reviews": {
+      "get": {
+        "summary": "Get Google reviews",
+        "description": "Retrieves Google reviews from the database. Can be filtered by listing ID.",
         "tags": ["Google Reviews"],
+        "parameters": [
+          {
+            "name": "listing",
+            "in": "query",
+            "description": "Filter by listing ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "listing_123"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Google reviews seeded successfully",
+            "description": "Google reviews retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Google reviews seeded successfully"
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
                     },
-                    "count": {
-                      "type": "integer",
-                      "description": "Number of reviews added"
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Review"
+                      }
+                    },
+                    "total": {
+                      "type": "number",
+                      "description": "Total number of Google reviews"
                     }
                   }
                 }
@@ -397,40 +415,55 @@
         }
       }
     },
-    "/api/google/places/{placeId}": {
-      "get": {
-        "summary": "Fetch reviews from Google Places API",
-        "description": "Fetches reviews from Google Places API for a specific place. Currently returns mock data, but can be extended for real Google Places integration.",
+    "/api/google/sync": {
+      "post": {
+        "summary": "Sync Google reviews for a listing",
+        "description": "Fetches reviews from Google Places API and saves them to the database for a specific listing. Requires Google Places API key to be configured.",
         "tags": ["Google Reviews"],
-        "parameters": [
-          {
-            "name": "placeId",
-            "in": "path",
-            "description": "Google Places ID",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["listingId", "placeId"],
+                "properties": {
+                  "listingId": {
+                    "type": "string",
+                    "description": "The listing ID to sync reviews for",
+                    "example": "listing_123"
+                  },
+                  "placeId": {
+                    "type": "string",
+                    "description": "Google Places API place ID",
+                    "example": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+                  }
+                }
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Google reviews fetched successfully",
+            "description": "Google reviews synced successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Synced 5 new Google reviews"
+                    },
                     "reviews": {
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/Review"
                       }
-                    },
-                    "placeId": {
-                      "type": "string",
-                      "description": "The Google Places ID that was queried"
                     }
                   }
                 }
@@ -438,7 +471,7 @@
             }
           },
           "400": {
-            "description": "Invalid place ID",
+            "description": "Bad request - missing required fields or API key not configured",
             "content": {
               "application/json": {
                 "schema": {
@@ -449,6 +482,84 @@
           },
           "500": {
             "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/test": {
+      "get": {
+        "summary": "Test Google Places API connection",
+        "description": "Tests the connection to Google Places API using a provided place ID. Useful for verifying API key configuration and connectivity.",
+        "tags": ["Google Reviews"],
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "query",
+            "description": "Google Places API place ID to test",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection test successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Google Places API connection successful"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "Google Headquarters"
+                        },
+                        "rating": {
+                          "type": "number",
+                          "example": 4.2
+                        },
+                        "reviewCount": {
+                          "type": "number",
+                          "example": 1250
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing placeId or API key not configured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Google Places API connection failed",
             "content": {
               "application/json": {
                 "schema": {

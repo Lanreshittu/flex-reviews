@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Reviews Integration - Flex Living</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon" style="color: white;">F</div>
+                <span style="color: white;">Google Reviews Integration</span>
+            </div>
+            <div class="header-actions">
+                <a href="manager-dashboard.html" class="btn btn-secondary btn-sm">
+                    ← Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Setup Section -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Google Reviews Setup</h2>
+                <div class="card-icon">🔧</div>
+            </div>
+            <div class="card-content">
+                <div class="setup-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Get Google Places API Key</h3>
+                            <p>Visit <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a> and create an API key</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Enable Places API</h3>
+                            <p>Enable the Places API in your Google Cloud project</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Configure Environment</h3>
+                            <p>Add your API key to the <code>env</code> file: <code>GOOGLE_PLACES_API_KEY=your-key-here</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Connection -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Test Google Places API</h2>
+                <div class="card-icon">🧪</div>
+            </div>
+            <div class="card-content">
+                <div class="form-group">
+                    <label for="placeId" class="form-label">Google Place ID</label>
+                    <input type="text" id="placeId" class="form-input" placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4" />
+                    <small class="form-help">Find your Place ID using <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank">Google's Place ID Finder</a></small>
+                </div>
+                <button id="testConnection" class="btn btn-primary">Test Connection</button>
+                <div id="testResult" class="test-result"></div>
+            </div>
+        </div>
+
+        <!-- Sync Reviews -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Sync Google Reviews</h2>
+                <div class="card-icon">🔄</div>
+            </div>
+            <div class="card-content">
+                <div class="form-group">
+                    <label for="syncListingId" class="form-label">Listing ID</label>
+                    <input type="text" id="syncListingId" class="form-input" placeholder="listing_123" />
+                </div>
+                <div class="form-group">
+                    <label for="syncPlaceId" class="form-label">Google Place ID</label>
+                    <input type="text" id="syncPlaceId" class="form-input" placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4" />
+                </div>
+                <button id="syncReviews" class="btn btn-primary">Sync Reviews</button>
+                <div id="syncResult" class="sync-result"></div>
+            </div>
+        </div>
+
+        <!-- View Google Reviews -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Google Reviews</h2>
+                <div class="card-icon">⭐</div>
+            </div>
+            <div class="card-content">
+                <button id="loadGoogleReviews" class="btn btn-secondary">Load Google Reviews</button>
+                <div id="googleReviewsList" class="reviews-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Google Reviews Integration JavaScript
+        class GoogleReviewsIntegration {
+            constructor() {
+                this.apiBase = window.location.origin;
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                document.getElementById('testConnection').addEventListener('click', () => this.testConnection());
+                document.getElementById('syncReviews').addEventListener('click', () => this.syncReviews());
+                document.getElementById('loadGoogleReviews').addEventListener('click', () => this.loadGoogleReviews());
+            }
+
+            async testConnection() {
+                const placeId = document.getElementById('placeId').value;
+                if (!placeId) {
+                    this.showResult('testResult', 'Please enter a Place ID', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.apiBase}/api/google/test?placeId=${placeId}`);
+                    const data = await response.json();
+                    
+                    if (data.ok) {
+                        this.showResult('testResult', 
+                            `✅ Connection successful!<br>
+                             Business: ${data.data.name}<br>
+                             Rating: ${data.data.rating}/5<br>
+                             Reviews: ${data.data.reviewCount}`, 'success');
+                    } else {
+                        this.showResult('testResult', `❌ ${data.error}`, 'error');
+                    }
+                } catch (error) {
+                    this.showResult('testResult', `❌ Connection failed: ${error.message}`, 'error');
+                }
+            }
+
+            async syncReviews() {
+                const listingId = document.getElementById('syncListingId').value;
+                const placeId = document.getElementById('syncPlaceId').value;
+                
+                if (!listingId || !placeId) {
+                    this.showResult('syncResult', 'Please enter both Listing ID and Place ID', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.apiBase}/api/google/sync`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ listingId, placeId })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.ok) {
+                        this.showResult('syncResult', 
+                            `✅ ${data.message}<br>
+                             Synced ${data.reviews.length} reviews`, 'success');
+                    } else {
+                        this.showResult('syncResult', `❌ ${data.message}`, 'error');
+                    }
+                } catch (error) {
+                    this.showResult('syncResult', `❌ Sync failed: ${error.message}`, 'error');
+                }
+            }
+
+            async loadGoogleReviews() {
+                try {
+                    // Fetch both reviews and properties in parallel
+                    const [reviewsResponse, propertiesResponse] = await Promise.all([
+                        fetch(`${this.apiBase}/api/google/reviews`),
+                        fetch(`${this.apiBase}/api/properties`)
+                    ]);
+                    
+                    const reviewsData = await reviewsResponse.json();
+                    const propertiesData = await propertiesResponse.json();
+                    
+                    if (reviewsData.ok) {
+                        // Create a map of listing_id to property name for quick lookup
+                        const propertyMap = {};
+                        if (propertiesData.ok && propertiesData.properties) {
+                            propertiesData.properties.forEach(property => {
+                                propertyMap[property.id] = property.name;
+                            });
+                        }
+                        
+                        // Add listing names to reviews
+                        const reviewsWithListings = reviewsData.reviews.map(review => ({
+                            ...review,
+                            listing_name: propertyMap[review.listing_id] || 'Unknown Property'
+                        }));
+                        
+                        this.displayGoogleReviews(reviewsWithListings);
+                    } else {
+                        this.showResult('googleReviewsList', `❌ Failed to load reviews: ${reviewsData.error}`, 'error');
+                    }
+                } catch (error) {
+                    this.showResult('googleReviewsList', `❌ Failed to load reviews: ${error.message}`, 'error');
+                }
+            }
+
+            displayGoogleReviews(reviews) {
+                const container = document.getElementById('googleReviewsList');
+                
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">No Google reviews found.</p>';
+                    return;
+                }
+
+                const reviewsHTML = reviews.map(review => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="review-author-info">
+                                <h4>${review.author_name}</h4>
+                                <span class="review-listing">${review.listing_name}</span>
+                            </div>
+                            <div class="review-rating">
+                                ${this.renderStars(review.rating)}
+                                <span class="rating-value">${review.rating}/5</span>
+                            </div>
+                        </div>
+                        <p class="review-text">${review.comment}</p>
+                        <div class="review-meta">
+                            <span class="review-date">${new Date(review.submitted_at).toLocaleDateString()}</span>
+                            <span class="review-channel">Google</span>
+                            <span class="review-status ${review.approved ? 'approved' : 'pending'}">
+                                ${review.approved ? 'Approved' : 'Pending'}
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = reviewsHTML;
+            }
+
+            renderStars(rating) {
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating % 1 !== 0;
+                let stars = '';
+                
+                for (let i = 0; i < fullStars; i++) {
+                    stars += '<span class="star filled">★</span>';
+                }
+                
+                if (hasHalfStar) {
+                    stars += '<span class="star filled">☆</span>';
+                }
+                
+                const emptyStars = 5 - Math.ceil(rating);
+                for (let i = 0; i < emptyStars; i++) {
+                    stars += '<span class="star">★</span>';
+                }
+                
+                return stars;
+            }
+
+            showResult(elementId, message, type) {
+                const element = document.getElementById(elementId);
+                element.innerHTML = `<div class="result-message ${type}">${message}</div>`;
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new GoogleReviewsIntegration();
+        });
+    </script>
+
+    <style>
+        .setup-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .step-number {
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--gray-800);
+        }
+
+        .step-content p {
+            margin: 0;
+            color: var(--gray-600);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .form-help {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+
+        .test-result, .sync-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+        }
+
+        .result-message.success {
+            background: #DCFCE7;
+            color: #166534;
+            border: 1px solid #BBF7D0;
+        }
+
+        .result-message.error {
+            background: #FEE2E2;
+            color: #DC2626;
+            border: 1px solid #FECACA;
+        }
+
+        .reviews-list {
+            margin-top: 1rem;
+        }
+
+        .review-item {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .review-author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .review-header h4 {
+            margin: 0;
+            color: #111827;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .review-listing {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .review-text {
+            margin: 0.75rem 0;
+            color: #374151;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .review-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.75rem;
+        }
+
+        .review-status.approved {
+            color: #059669;
+            font-weight: 500;
+            background: #d1fae5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .review-status.pending {
+            color: #d97706;
+            font-weight: 500;
+            background: #fef3c7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .rating-value {
+            color: #374151;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .star {
+            color: #d1d5db;
+            font-size: 1.2rem;
+        }
+
+        .star.filled {
+            color: #f59e0b;
+        }
+    </style>
+</body>
+</html>

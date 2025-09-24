@@ -7,6 +7,55 @@
     margin-bottom: 1rem;
 }
 
+/* Body Text - Make darker for better readability on cream background */
+body {
+    color: #1F2937; /* Dark gray instead of default */
+}
+
+/* Card content text - ensure dark text */
+.card-content p {
+    color: #1F2937 !important; /* Dark gray for better contrast */
+    font-weight: 500;
+}
+
+.card-content h3 {
+    color: #111827 !important; /* Very dark gray for headings */
+    font-weight: 600;
+}
+
+/* Step content text */
+.step-content p {
+    color: #1F2937 !important; /* Dark gray for better readability */
+    font-weight: 500;
+}
+
+.step-content h3 {
+    color: #111827 !important; /* Very dark gray for step headings */
+    font-weight: 600;
+}
+
+/* Form labels and help text */
+.form-label {
+    color: #1F2937 !important; /* Dark gray for labels */
+    font-weight: 600;
+}
+
+.form-help {
+    color: #374151 !important; /* Dark gray for help text */
+}
+
+/* All paragraph text in cards */
+.card p {
+    color: #1F2937 !important;
+    font-weight: 500;
+}
+
+/* All headings in cards */
+.card h2, .card h3 {
+    color: #111827 !important;
+    font-weight: 600;
+}
+
 :root {
   /* Flex Living Color Palette */
   --primary-green: #284E4C;
@@ -338,11 +387,19 @@ body {
 
 .btn-primary {
   background: var(--primary-green);
-  color: var(--white);
+  color: var(--white) !important;
+  font-weight: 600;
 }
 
 .btn-primary:hover {
   background: var(--primary-green-dark);
+  color: var(--white) !important;
+}
+
+/* Ensure button text is always white */
+.btn-primary, .btn-primary:focus, .btn-primary:active, .btn-primary:visited {
+  color: var(--white) !important;
+  text-decoration: none;
 }
 
 .btn-secondary {
