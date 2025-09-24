@@ -7,7 +7,6 @@ dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  url: process.env.DATABASE_URL || `postgresql://${process.env.POSTGRES_USER || "postgres"}:${process.env.POSTGRES_PASSWORD || "password"}@${process.env.POSTGRES_HOST || "localhost"}:${process.env.POSTGRES_PORT || "5432"}/${process.env.POSTGRES_DATABASE || "flex"}`,
   host: process.env.POSTGRES_HOST || "localhost",
   port: parseInt(process.env.POSTGRES_PORT || "5432"),
   username: process.env.POSTGRES_USER || "postgres",
@@ -15,7 +14,7 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DATABASE || "flex",
   synchronize: true,
   logging: false, // Disable SQL query logging
-  entities: [Listing, Review],
+  entities: [__dirname + "/entity/*.{js,ts}"],
   migrations: ["dist/migration/*.js"],
   // SSL configuration for Render databases
   ssl: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "PRODUCTION" ? {
