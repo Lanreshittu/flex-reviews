@@ -7,6 +7,7 @@ dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: "postgres",
+  url: process.env.DATABASE_URL || `postgresql://${process.env.POSTGRES_USER || "postgres"}:${process.env.POSTGRES_PASSWORD || "password"}@${process.env.POSTGRES_HOST || "localhost"}:${process.env.POSTGRES_PORT || "5432"}/${process.env.POSTGRES_DATABASE || "flex"}`,
   host: process.env.POSTGRES_HOST || "localhost",
   port: parseInt(process.env.POSTGRES_PORT || "5432"),
   username: process.env.POSTGRES_USER || "postgres",
@@ -16,8 +17,22 @@ export const AppDataSource = new DataSource({
   logging: false, // Disable SQL query logging
   entities: [Listing, Review],
   migrations: ["dist/migration/*.js"],
-  // Add connection options for better compatibility
+  // SSL configuration for Render databases
+  ssl: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "PRODUCTION" ? {
+    rejectUnauthorized: false
+  } : false,
   extra: {
-    trustServerCertificate: true,
+    ssl: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "PRODUCTION" ? {
+      rejectUnauthorized: false
+    } : undefined,
+    connectionTimeoutMillis: 30000,
+    idleTimeoutMillis: 30000,
+    max: 20,
+    min: 5,
+    acquireTimeoutMillis: 30000,
+    createTimeoutMillis: 30000,
+    destroyTimeoutMillis: 5000,
+    reapIntervalMillis: 1000,
+    createRetryIntervalMillis: 200,
   },
 });
