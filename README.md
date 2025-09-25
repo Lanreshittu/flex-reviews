@@ -251,29 +251,69 @@ ADMIN_KEY=your-secret-admin-key
 ### Database Setup (PostgreSQL)
 
 1. **Install PostgreSQL**
+   - Download from [postgresql.org](https://www.postgresql.org/download/)
+   - Or use Docker: `docker run --name postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres`
+
 2. **Create database**
    ```sql
    CREATE DATABASE flex;
    ```
+
 3. **Update environment variables**
-4. **Run migrations**
-   ```bash
-   npm run seed
+   ```env
+   POSTGRES_HOST=localhost
+   POSTGRES_PORT=5432
+   POSTGRES_USER=postgres
+   POSTGRES_PASSWORD=password
+   POSTGRES_DATABASE=flex
+   ADMIN_KEY=your-secret-admin-key
    ```
+
+4. **Database Schema (Auto-Generated)**
+   - **No migrations required!** The app uses `synchronize: true`
+   - TypeORM automatically creates tables based on entity definitions
+   - Tables created: `reviews`, `listings`
+   - Schema updates automatically on app restart
 
 ## 🚀 Deployment
 
-### Option 1: Memory Server (Recommended)
+### Option 1: Memory Server (Recommended for Development)
 - No database setup required
 - Data persisted in JSON files
 - Perfect for demos and development
+- Run: `npm run dev`
 
-### Option 2: PostgreSQL Server
+### Option 2: PostgreSQL Server (Production)
 - Production-ready with database
 - Full ACID compliance
+- Run: `npm run dev-db` (development) or `npm run start` (production)
 - Scalable architecture
 
 ### Deployment Platforms
+
+#### Vercel (Recommended)
+1. **Connect GitHub repository to Vercel**
+2. **Set environment variables in Vercel dashboard:**
+   ```
+   POSTGRES_HOST=your-render-host
+   POSTGRES_PORT=5432
+   POSTGRES_USER=your-username
+   POSTGRES_PASSWORD=your-password
+   POSTGRES_DATABASE=flex
+   ADMIN_KEY=your-secret-admin-key
+   NODE_ENV=production
+   ```
+3. **Deploy automatically on git push**
+
+#### Render (Database)
+1. **Create PostgreSQL database on Render**
+2. **Copy connection details to Vercel environment variables**
+3. **Database automatically configured with SSL**
+
+### Authentication Setup
+- **Admin Key**: Set `ADMIN_KEY` environment variable
+- **Dashboard Login**: Use the login modal in the dashboard
+- **API Access**: Include `X-Admin-Key` header for protected endpoints
 
 ## 📊 Dashboard Features
 
@@ -381,6 +421,4 @@ curl "http://localhost:3000/api/google/test?placeId=ChIJN1t_tDeuEmsRUsoyG83frY4"
 - **Analytics**: Complex calculations for insights and trends
 - **Filtering**: Multi-dimensional filtering capabilities
 - **Export**: CSV generation with proper formatting
-
----
 
