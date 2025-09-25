@@ -14,8 +14,8 @@ export const GoogleService = {
         throw new Error(`Google Places API error: ${response.status}`);
       }
       
-      const data = await response.json();
-      console.log('Google Places API Response:', JSON.stringify(data, null, 2));
+     const data = await response.json();
+  
       if (data.status !== 'OK') {
         throw new Error(`Google Places API error: ${data.status}`);
       }
