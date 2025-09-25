@@ -2,6 +2,8 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { join } from "path";
 import * as dotenv from "dotenv";
+import { Listing } from "./entities/Listing.entity";
+import { Review } from "./entities/Review.entity";
 
 dotenv.config();
 
@@ -21,10 +23,10 @@ export const AppDataSource = new DataSource({
   password: POSTGRES_PASSWORD,
   database: POSTGRES_DATABASE,
   synchronize: true,
-  logging: false,
+  logging: process.env.NODE_ENV === "development",
 
-  // ✅ Works for both dev (ts-node) and prod (compiled dist)
-  entities: [join(__dirname, "**/*.entity.{js,ts}")],
+  // ✅ Explicit entity imports for production compatibility
+  entities: [Listing, Review],
   migrations: [join(__dirname, "**/*.migration.{js,ts}")],
   subscribers: [join(__dirname, "**/*.subscriber.{js,ts}")],
 
@@ -38,3 +40,6 @@ export const AppDataSource = new DataSource({
   // ✅ Use DATABASE_URL if provided (Render/Vercel)
   ...(DATABASE_URL && { url: DATABASE_URL }),
 });
+
+// Verify entities are loaded correctly
+console.log("📋 Loaded entities:", AppDataSource.entityMetadatas.map(e => e.name));
