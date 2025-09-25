@@ -22,7 +22,13 @@ app.use(express.static('public'));
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Flex Living Reviews API'
+  customSiteTitle: 'Flex Living Reviews API',
+  swaggerOptions: {
+    url: '/api-docs.json',
+    dom_id: '#swagger-ui',
+    deepLinking: true,
+    layout: "StandaloneLayout"
+  }
 }));
 
 app.get("/health", (_req: any, res: any) => res.json({ ok: true }));
