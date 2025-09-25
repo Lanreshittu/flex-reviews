@@ -713,14 +713,13 @@ class FlexReviewsDashboard {
         }
 
         try {
-            // Test the admin key by making a test request
-            const response = await fetch(`${this.apiBase}/api/admin/reviews/test-auth/approve`, {
-                method: 'PATCH',
+            // Test the admin key using the authentication endpoint
+            const response = await fetch(`${this.apiBase}/api/admin/authenticate`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Admin-Key': adminKey
-                },
-                body: JSON.stringify({ approved: true })
+                }
             });
 
             if (response.status === 401) {
@@ -729,12 +728,22 @@ class FlexReviewsDashboard {
                 return;
             }
 
-            // If we get here, the key is valid (even if the review doesn't exist)
-            this.isAuthenticated = true;
-            this.adminKey = adminKey;
-            this.updateAuthUI();
-            this.hideLoginModal();
-            this.showSuccess('Successfully authenticated as admin');
+            if (response.status === 200) {
+                const result = await response.json();
+                if (result.ok) {
+                    this.isAuthenticated = true;
+                    this.adminKey = adminKey;
+                    this.updateAuthUI();
+                    this.hideLoginModal();
+                    this.showSuccess('Successfully authenticated as admin');
+                } else {
+                    errorDiv.textContent = 'Authentication failed. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+            } else {
+                errorDiv.textContent = 'Authentication failed. Please try again.';
+                errorDiv.style.display = 'block';
+            }
             
         } catch (error) {
             console.error('Authentication error:', error);
