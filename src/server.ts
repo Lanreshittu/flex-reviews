@@ -20,9 +20,17 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Swagger documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Flex Living Reviews API'
+}));
 
 app.get("/health", (_req: any, res: any) => res.json({ ok: true }));
+
+// Swagger JSON endpoint for debugging
+app.get("/api-docs.json", (_req: any, res: any) => {
+  res.json(swaggerSpec);
+});
 
 app.use("/api/reviews/hostaway", hostawayRoutes); // <-- assessed endpoint
 app.use("/api/reviews", reviewsRoutes);
