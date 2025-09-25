@@ -1,7 +1,7 @@
 const { useState, useEffect } = React;
 
 // API Configuration
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = `${window.location.origin}/api`;
 
 // Components
 const StarRating = ({ rating, maxRating = 5, size = 'text-lg', showNumeric = false }) => {
