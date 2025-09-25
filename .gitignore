@@ -19,6 +19,7 @@ data/
 !package-lock.json
 !tsconfig.json
 !swagger.json
+!src/hostaway.mock.json
 
 # Build outputs
 dist/

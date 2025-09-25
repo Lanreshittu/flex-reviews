@@ -1,0 +1,297 @@
+{
+    "status": "success",
+    "result": [
+        {
+            "id": 7453,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": null,
+            "publicReview": "Shane and family are wonderful! Would definitely host again :)",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 10
+                },
+                {
+                    "category": "communication",
+                    "rating": 10
+                },
+                {
+                    "category": "respect_house_rules",
+                    "rating": 10
+                }
+            ],
+            "submittedAt": "2020-08-21 22:45:14",
+            "guestName": "Shane Finkelstein",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7454,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 8,
+            "publicReview": "Great location and clean apartment. The check-in process was smooth and the host was very responsive to our questions.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 9
+                },
+                {
+                    "category": "communication",
+                    "rating": 10
+                },
+                {
+                    "category": "location",
+                    "rating": 8
+                },
+                {
+                    "category": "value",
+                    "rating": 7
+                }
+            ],
+            "submittedAt": "2020-09-15 14:30:22",
+            "guestName": "Maria Rodriguez",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7455,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 6,
+            "publicReview": "The apartment was nice but there were some issues with the heating system. The host was quick to respond and tried to help, but we had to wait for maintenance.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 8
+                },
+                {
+                    "category": "communication",
+                    "rating": 9
+                },
+                {
+                    "category": "accuracy",
+                    "rating": 5
+                },
+                {
+                    "category": "checkin",
+                    "rating": 7
+                }
+            ],
+            "submittedAt": "2020-10-03 09:15:45",
+            "guestName": "James Wilson",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7456,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 9,
+            "publicReview": "Absolutely fantastic stay! The apartment exceeded our expectations. Perfect location, beautifully decorated, and the host provided excellent local recommendations.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 10
+                },
+                {
+                    "category": "communication",
+                    "rating": 10
+                },
+                {
+                    "category": "location",
+                    "rating": 9
+                },
+                {
+                    "category": "value",
+                    "rating": 8
+                },
+                {
+                    "category": "accuracy",
+                    "rating": 9
+                }
+            ],
+            "submittedAt": "2020-11-12 16:20:33",
+            "guestName": "Sarah Chen",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7457,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 7,
+            "publicReview": "Good apartment in a convenient location. The space was clean and well-equipped. Minor issue with the WiFi speed but overall a pleasant stay.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 8
+                },
+                {
+                    "category": "communication",
+                    "rating": 8
+                },
+                {
+                    "category": "location",
+                    "rating": 8
+                },
+                {
+                    "category": "value",
+                    "rating": 7
+                }
+            ],
+            "submittedAt": "2020-12-01 11:45:12",
+            "guestName": "David Thompson",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7458,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 10,
+            "publicReview": "Outstanding experience! The host went above and beyond to make our stay comfortable. The apartment is stunning and the location is perfect for exploring the city.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 10
+                },
+                {
+                    "category": "communication",
+                    "rating": 10
+                },
+                {
+                    "category": "location",
+                    "rating": 10
+                },
+                {
+                    "category": "value",
+                    "rating": 9
+                },
+                {
+                    "category": "accuracy",
+                    "rating": 10
+                },
+                {
+                    "category": "checkin",
+                    "rating": 10
+                }
+            ],
+            "submittedAt": "2021-01-15 13:30:18",
+            "guestName": "Emma Johnson",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7459,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 4,
+            "publicReview": "The apartment was not as described. There were cleanliness issues and the host was difficult to reach when we had problems. Not what we expected for the price.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 3
+                },
+                {
+                    "category": "communication",
+                    "rating": 4
+                },
+                {
+                    "category": "accuracy",
+                    "rating": 3
+                },
+                {
+                    "category": "value",
+                    "rating": 2
+                }
+            ],
+            "submittedAt": "2021-02-08 19:22:41",
+            "guestName": "Michael Brown",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7460,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 8,
+            "publicReview": "Nice apartment with good amenities. The location is excellent and the host provided clear instructions. Would recommend for business travelers.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 8
+                },
+                {
+                    "category": "communication",
+                    "rating": 9
+                },
+                {
+                    "category": "location",
+                    "rating": 9
+                },
+                {
+                    "category": "value",
+                    "rating": 7
+                }
+            ],
+            "submittedAt": "2021-03-20 15:10:55",
+            "guestName": "Lisa Anderson",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7461,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 9,
+            "publicReview": "Exceptional stay! The apartment is beautifully designed and the host's attention to detail is remarkable. Perfect for a romantic getaway.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 10
+                },
+                {
+                    "category": "communication",
+                    "rating": 9
+                },
+                {
+                    "category": "location",
+                    "rating": 8
+                },
+                {
+                    "category": "value",
+                    "rating": 9
+                },
+                {
+                    "category": "accuracy",
+                    "rating": 9
+                }
+            ],
+            "submittedAt": "2021-04-12 20:45:30",
+            "guestName": "Robert Taylor",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        },
+        {
+            "id": 7462,
+            "type": "host-to-guest",
+            "status": "published",
+            "rating": 6,
+            "publicReview": "The apartment is in a good location but needs some maintenance. The furniture is a bit worn and the kitchen appliances could be updated.",
+            "reviewCategory": [
+                {
+                    "category": "cleanliness",
+                    "rating": 6
+                },
+                {
+                    "category": "communication",
+                    "rating": 7
+                },
+                {
+                    "category": "location",
+                    "rating": 8
+                },
+                {
+                    "category": "value",
+                    "rating": 5
+                }
+            ],
+            "submittedAt": "2021-05-05 12:15:22",
+            "guestName": "Jennifer Davis",
+            "listingName": "2B N1 A - 29 Shoreditch Heights"
+        }
+    ]
+}
