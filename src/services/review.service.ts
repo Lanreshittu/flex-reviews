@@ -1,5 +1,5 @@
 // src/services/review.service.ts
-import { AppDataSource } from "../data-source";
+import { initializeDataSource } from "../data-source";
 import { Review } from "../entities/Review.entity";
 
 export const ReviewService = {
@@ -14,7 +14,8 @@ export const ReviewService = {
     skip: number;
     take: number;
   }) {
-    const repo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const repo = ds.getRepository(Review);
     const qb = repo
       .createQueryBuilder("r")
       .innerJoinAndSelect("r.listing", "l");
@@ -57,7 +58,8 @@ export const ReviewService = {
   },
 
   async setApproval(id: string, approved: boolean) {
-    const repo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const repo = ds.getRepository(Review);
     const review = await repo.findOne({ where: { id } });
     if (!review) throw new Error("review_not_found");
     review.approved = approved;

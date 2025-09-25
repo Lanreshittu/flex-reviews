@@ -1,12 +1,13 @@
-import { AppDataSource } from "../data-source";
+import { initializeDataSource } from "../data-source";
 import { Listing } from "../entities/Listing.entity";
 import { Review } from "../entities/Review.entity";
 
 export const PropertyService = {
   // Get all properties with summary stats
   async getAllProperties() {
-    const listingRepo = AppDataSource.getRepository(Listing);
-    const reviewRepo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const listingRepo = ds.getRepository(Listing);
+    const reviewRepo = ds.getRepository(Review);
 
     const listings = await listingRepo.find();
     
@@ -66,8 +67,9 @@ export const PropertyService = {
 
   // Get detailed performance metrics for a property
   async getPropertyPerformance(propertyId: string) {
-    const listingRepo = AppDataSource.getRepository(Listing);
-    const reviewRepo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const listingRepo = ds.getRepository(Listing);
+    const reviewRepo = ds.getRepository(Review);
 
     const listing = await listingRepo.findOne({ where: { id: propertyId } });
     if (!listing) {
@@ -142,7 +144,8 @@ export const PropertyService = {
 
   // Get trend analysis for a property
   async getPropertyTrends(propertyId: string, period: string) {
-    const reviewRepo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const reviewRepo = ds.getRepository(Review);
     
     const days = this.getPeriodDays(period);
     const startDate = new Date();

@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./swagger.config";
-import { AppDataSource } from "./data-source";
+import { AppDataSource, initializeDataSource } from "./data-source";
 import hostawayRoutes from "./routes/hostaway.routes";
 import reviewsRoutes from "./routes/reviews.routes";
 import adminRoutes from "./routes/admin.routes";
@@ -45,7 +45,10 @@ app.use("/api/google", googleRoutes);
 app.use("/api/properties", propertyRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
-AppDataSource.initialize().then(() => {
+initializeDataSource().then((ds) => {
+  // Verify entities are loaded correctly
+  console.log("📋 Loaded entities:", ds.entityMetadatas.map(e => e.name));
+  
   const port = parseInt(process.env.PORT || '4000', 10);
   const host = process.env.HOST || 'localhost';
   const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';

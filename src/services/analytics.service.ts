@@ -1,12 +1,13 @@
-import { AppDataSource } from "../data-source";
+import { initializeDataSource } from "../data-source";
 import { Listing } from "../entities/Listing.entity";
 import { Review } from "../entities/Review.entity";
 
 export const AnalyticsService = {
   // Get cross-property analytics overview
   async getOverview() {
-    const listingRepo = AppDataSource.getRepository(Listing);
-    const reviewRepo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const listingRepo = ds.getRepository(Listing);
+    const reviewRepo = ds.getRepository(Review);
 
     const listings = await listingRepo.find();
     const allReviews = await reviewRepo.find();
@@ -93,8 +94,9 @@ export const AnalyticsService = {
 
   // Get performance comparison between properties
   async getPropertyComparison(propertyIds: string[]) {
-    const reviewRepo = AppDataSource.getRepository(Review);
-    const listingRepo = AppDataSource.getRepository(Listing);
+    const ds = await initializeDataSource();
+    const reviewRepo = ds.getRepository(Review);
+    const listingRepo = ds.getRepository(Listing);
 
     const comparisons = await Promise.all(
       propertyIds.map(async (id) => {
@@ -146,7 +148,8 @@ export const AnalyticsService = {
 
   // Get insights and recommendations
   async getInsights() {
-    const reviewRepo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const reviewRepo = ds.getRepository(Review);
     const allReviews = await reviewRepo.find();
 
     const insights = [];

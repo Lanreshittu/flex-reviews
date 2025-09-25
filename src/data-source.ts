@@ -41,5 +41,12 @@ export const AppDataSource = new DataSource({
   ...(DATABASE_URL && { url: DATABASE_URL }),
 });
 
-// Verify entities are loaded correctly
-console.log("📋 Loaded entities:", AppDataSource.entityMetadatas.map(e => e.name));
+// ✅ Helper to prevent multiple initializations in serverless
+export const initializeDataSource = async () => {
+  if (!AppDataSource.isInitialized) {
+    await AppDataSource.initialize();
+  }
+  return AppDataSource;
+};
+
+

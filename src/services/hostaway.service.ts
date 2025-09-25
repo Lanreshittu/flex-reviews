@@ -1,5 +1,5 @@
 // src/services/hostaway.service.ts
-import { AppDataSource } from "../data-source";
+import { initializeDataSource } from "../data-source";
 import { Listing } from "../entities/Listing.entity";
 import { Review } from "../entities/Review.entity";
 import { normalizeHostawayItem } from "../lib/normalize";
@@ -53,8 +53,9 @@ export const HostawayService = {
 
     console.log(`🔄 Seeding ${raw.result.length} Hostaway reviews...`);
 
-    const listingRepo = AppDataSource.getRepository(Listing);
-    const reviewRepo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const listingRepo = ds.getRepository(Listing);
+    const reviewRepo = ds.getRepository(Review);
 
     for (const item of raw.result) {
       const listingName = item.listingName || "Unknown Listing";
@@ -103,7 +104,8 @@ export const HostawayService = {
     skip: number;
     take: number;
   }) {
-    const reviewRepo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const reviewRepo = ds.getRepository(Review);
     const qb = reviewRepo
       .createQueryBuilder("r")
       .innerJoinAndSelect("r.listing", "l")

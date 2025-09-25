@@ -1,4 +1,4 @@
-import { AppDataSource } from "../data-source";
+import { initializeDataSource } from "../data-source";
 import { Review } from "../entities/Review.entity";
 import { Listing } from "../entities/Listing.entity";
 import { normalizeGoogleReview } from "../lib/normalize";
@@ -29,8 +29,9 @@ export const GoogleService = {
 
   // Save Google reviews to database
   async saveGoogleReviews(googleData: any, listingId: string) {
-    const reviewRepo = AppDataSource.getRepository(Review);
-    const listingRepo = AppDataSource.getRepository(Listing);
+    const ds = await initializeDataSource();
+    const reviewRepo = ds.getRepository(Review);
+    const listingRepo = ds.getRepository(Listing);
     
     const listing = await listingRepo.findOne({ where: { id: listingId } });
     if (!listing) {
@@ -85,7 +86,8 @@ export const GoogleService = {
 
   // Get all Google reviews for a listing
   async getGoogleReviews(listingId?: string) {
-    const reviewRepo = AppDataSource.getRepository(Review);
+    const ds = await initializeDataSource();
+    const reviewRepo = ds.getRepository(Review);
     
     const whereClause: any = { channel: 'google' };
     if (listingId) {
