@@ -16,13 +16,38 @@ export const HostawayService = {
    * Call once (lazy) from GET /api/reviews/hostaway before querying.
    */
   async seedFromMock(opts: SeedOptions = {}) {
-    const mockPath =
-      opts.mockPath ||
-      path.join(process.cwd(), "src", "hostaway.mock.json"); // put the JSON here
+    // Handle both development and production paths
+    let mockPath = opts.mockPath;
+    if (!mockPath) {
+      // Try production path first (compiled dist), then development path
+      const prodPath = path.join(process.cwd(), "dist", "src", "hostaway.mock.json");
+      const devPath = path.join(process.cwd(), "src", "hostaway.mock.json");
+      
+      console.log(`🔍 Looking for mock file in: ${prodPath}`);
+      console.log(`🔍 Looking for mock file in: ${devPath}`);
+      
+      if (fs.existsSync(prodPath)) {
+        mockPath = prodPath;
+        console.log(`✅ Found mock file at: ${prodPath}`);
+      } else if (fs.existsSync(devPath)) {
+        mockPath = devPath;
+        console.log(`✅ Found mock file at: ${devPath}`);
+      } else {
+        console.log("❌ No mock data file found in any location");
+        console.log(`📁 Current working directory: ${process.cwd()}`);
+        return;
+      }
+    }
+    
     const raw = JSON.parse(fs.readFileSync(mockPath, "utf-8"));
 
     if (!raw?.result || !Array.isArray(raw.result)) {
       console.log("📝 No mock data found to seed");
+      return;
+    }
+    
+    if (raw.result.length === 0) {
+      console.log("📝 Mock data is empty, skipping seed");
       return;
     }
 
